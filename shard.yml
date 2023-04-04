@@ -1,0 +1,21 @@
+name: rosegold-example
+version: 0.1.0
+
+authors:
+  - Gjum <code.gjum@gmail.com>
+
+license: MIT
+
+targets:
+  script:
+    main: src/script.cr
+
+crystal: 1.7.3
+
+dependencies:
+  rosegold:
+    github: RosegoldMC/rosegold.cr
+
+development_dependencies:
+  dotenv:
+    github: drum445/dotenv

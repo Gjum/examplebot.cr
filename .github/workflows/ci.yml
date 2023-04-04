@@ -1,0 +1,38 @@
+name: Continuous Integration
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  CheckFormat:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v2.4.0
+
+      - uses: oprypin/install-crystal@v1
+        with:
+          crystal: latest
+
+      - name: Set up Crystal cache
+        uses: actions/cache@v2.1.7
+        id: crystal-cache
+        with:
+          path: |
+            ~/.cache/crystal
+            lib
+          key: ${{ runner.os }}-crystal-${{ hashFiles('**/shard.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-crystal-
+
+      - name: Install shards
+        if: steps.crystal-cache.outputs.cache-hit != 'true'
+        run: shards check || shards install --ignore-crystal-version
+
+      - name: Build executable
+        run: shards build
